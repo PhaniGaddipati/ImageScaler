@@ -8,8 +8,9 @@ package com.centumengineering.imagescaler.scaling;
 import java.io.File;
 
 /**
+ * A class to hold the result params of a ScaleTask.
  *
- * @author Phani
+ * @author Phani Gaddipati
  */
 public class ScaleResult {
 
@@ -47,5 +48,19 @@ public class ScaleResult {
 
     public long getProcessingTimeInMillis() {
         return endTime - startTime;
+    }
+
+    /**
+     * Prints a basic summary based on the ScaleResult
+     *
+     * @param result
+     * @return
+     */
+    public static ScaleResult printTaskSummary(ScaleResult result) {
+        System.out.println(result.getFile().getName()
+                + "\t Original: " + result.getStartBytes() + " bytes\t Thumbnail: "
+                + result.getThumbBytes() + " bytes\t Full: " + result.getFullBytes()
+                + " bytes. Time: " + result.getProcessingTimeInMillis() + "ms");
+        return result;
     }
 }

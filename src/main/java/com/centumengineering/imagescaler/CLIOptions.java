@@ -1,22 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.centumengineering.imagescaler;
 
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 
 /**
- *
- * @author phani
+ * This class contains the CLI option definitions for ImageScaler,
+ * for use with the Apache commons-cli package.
+ * 
+ * @author Phani Gaddipati
  */
 public class CLIOptions {
 
     public static final String OPTION_IN_FILE = "in-file";
-    public static final String OPTION_IN_FILE_NET = "online";
+    public static final String OPTION_IN_FILE_NET = "online";    
 
     public static final String OPTION_IN_DIR = "in-dir";
     public static final String OPTION_DIR_RECURSIVE = "recursive";

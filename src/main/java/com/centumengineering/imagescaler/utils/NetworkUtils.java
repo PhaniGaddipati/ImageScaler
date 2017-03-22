@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.centumengineering.imagescaler.utils;
 
 import java.io.File;
@@ -11,19 +6,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 /**
- *
- * @author phani
+ * Basic utilities for dealing with online files.
+ * 
+ * @author Phani Gaddipati
  */
 public class NetworkUtils {
+    
+    private static final String DOWNLOAD_DIR = "net";
 
     /**
-     * Attempts to download all of the urls passed into the working directory.
+     * Attempts to download all of the urls passed into the net directory.
      * The successfully downloaded urls are added to the return set of
      * downloaded files
      *
@@ -33,10 +29,13 @@ public class NetworkUtils {
     public static File[] downloadFilesByURLs(String[] urls) {
         System.out.println("Attempting to download " + urls.length + " files");
         List<File> newPaths = new LinkedList<>();
+        File downloadDir = new File(DOWNLOAD_DIR);
+        downloadDir.mkdirs();
+        
         for (String path : urls) {
             try {
                 URL url = new URL(path);
-                File downloadedFile = new File(FilenameUtils.getName(url.getPath()));
+                File downloadedFile = new File(downloadDir, FilenameUtils.getName(url.getPath()));
                 if (downloadedFile.exists()) {
                     System.out.println(downloadedFile.getAbsolutePath() + " already exists. Skipping.");
                 } else {

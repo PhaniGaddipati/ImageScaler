@@ -1,25 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.centumengineering.imagescaler.scaling;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 
 /**
+ * This class contains the logic to scale images with ImageScalr.
  *
- * @author Phani
+ * @author Phani Gaddipati
  */
 public class ScaleTask {
 
@@ -54,7 +47,6 @@ public class ScaleTask {
         } catch (IOException ex) {
             // Complete exceptionally
             throw new RuntimeException(ex);
-            //Thread.currentThread().interrupt();
         }
 
         long endTime = System.currentTimeMillis();
@@ -62,16 +54,17 @@ public class ScaleTask {
                 FileUtils.sizeOf(thumbDest), FileUtils.sizeOf(fullDest), file);
     }
 
+    /**
+     * Returns a new CompletableFuture to perform the scaling task.
+     * @param f The file to scale
+     * @param thumbW The thumbnail width
+     * @param fullW The full-image width
+     * @param thumbDir The directory to write the thumbnail
+     * @param fullDir The directory to write the full-image
+     * @return 
+     */
     public static CompletableFuture<ScaleResult> newCompletableFuture(File f,
             int thumbW, int fullW, File thumbDir, File fullDir) {
         return CompletableFuture.supplyAsync(new ScaleTask(f, thumbW, fullW, thumbDir, fullDir)::run);
-    }
-
-    public static ScaleResult printTaskSummary(ScaleResult result) {
-        System.out.println(result.getFile().getName()
-                + "\t Original: " + result.getStartBytes() + " bytes\t Thumbnail: "
-                + result.getThumbBytes() + " bytes\t Full: " + result.getFullBytes()
-                + " bytes. Time: " + result.getProcessingTimeInMillis() + "ms");
-        return result;
     }
 }
