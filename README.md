@@ -42,3 +42,9 @@ usage: ImageScaler [options] --thumb-out --full-out --[in-file OR in-dir]
  Assuming the file `imgs.txt` contains a list of newline-delimited URLs of images, the images can be downloaded and scaled in 1 step.
  
  `ImageScaler -i -o "C:\imgs\imgs.txt" -to "C:\imgs\thumbs" -fo "C:\imgs\full"`
+
+# Credits
+ImageScaler makes use of the following libraries.
+* [ImageScalr](https://github.com/rkalla/imgscalr): Efficient image scaling
+* [Apache Commons IO](https://commons.apache.org/proper/commons-io/): Various file utilities
+* [Apache Commons CLI](https://commons.apache.org/proper/commons-cli/): Command line argument handling
