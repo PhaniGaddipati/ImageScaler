@@ -37,13 +37,15 @@ public class ScaleTask {
         String format = FilenameUtils.getExtension(file.getAbsolutePath());
 
         try {
+            // Scale to a fixed width for thumbnails and full-images
             BufferedImage img = ImageIO.read(file);
             BufferedImage thumbnail = Scalr.resize(img, thumbW,
                     (int) ((((float) thumbW) / img.getWidth()) * img.getHeight()));
             BufferedImage full = Scalr.resize(img, fullW,
                     (int) ((((float) fullW) / img.getWidth()) * img.getHeight()));
+            // Write the new images
             ImageIO.write(thumbnail, format, thumbDest);
-            ImageIO.write(full, format, fullDest);
+            ImageIO.write(full, format, fullDest);                        
         } catch (IOException ex) {
             // Complete exceptionally
             throw new RuntimeException(ex);
