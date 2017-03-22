@@ -17,6 +17,10 @@ public class CLIOptions {
 
     public static final String OPTION_IN_FILE = "in-file";
     public static final String OPTION_IN_FILE_NET = "online";
+
+    public static final String OPTION_IN_DIR = "in-dir";
+    public static final String OPTION_DIR_RECURSIVE = "recursive";
+
     public static final String OPTION_THUMB_OUT = "thumb-out";
     public static final String OPTION_FULL_OUT = "full-out";
 
@@ -64,17 +68,30 @@ public class CLIOptions {
                         + " By default, the paths will be treated as local paths."
                         + " Use the --" + OPTION_IN_FILE_NET
                         + " switch if the paths are to be downloaded to the working directory first."
-                        + " If this is provided, the files argument will be ignored.")
+                        + " Only this or " + OPTION_IN_DIR + " should be provided, not both.")
                 .hasArg()
                 .numberOfArgs(1)
+                .required(false)
+                .build());
+
+        options.addOption(Option.builder("d")
+                .longOpt(OPTION_IN_DIR)
+                .desc("Directory containing images to process. "
+                        + " Only this or " + OPTION_IN_FILE + " should be provided, not both.")
+                .hasArg()
+                .numberOfArgs(1)
+                .required(false)
+                .build());
+
+        options.addOption(Option.builder("r")
+                .longOpt(OPTION_DIR_RECURSIVE)
+                .desc("If using " + OPTION_IN_DIR + ", whether to scan directories recursively. Default is false.")
                 .required(false)
                 .build());
 
         options.addOption(Option.builder("o")
                 .longOpt(OPTION_IN_FILE_NET)
                 .desc("To be used with the --" + OPTION_IN_FILE + " switch to indicate that the paths are online sources")
-                .hasArg()
-                .numberOfArgs(1)
                 .required(false)
                 .build());
 
