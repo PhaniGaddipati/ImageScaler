@@ -40,10 +40,10 @@ public class NetworkUtils {
                 if (downloadedFile.exists()) {
                     System.out.println(downloadedFile.getAbsolutePath() + " already exists. Skipping.");
                 } else {
-                    FileUtils.copyURLToFile(url, downloadedFile);
-                    newPaths.add(downloadedFile);
+                    FileUtils.copyURLToFile(url, downloadedFile);                    
                     System.out.println("Downloaded " + downloadedFile.getAbsolutePath());
                 }
+                newPaths.add(downloadedFile);
             } catch (MalformedURLException ex) {
                 System.out.println("Invalid URL, ignoring \"" + path + "\"");
             } catch (IOException ex) {

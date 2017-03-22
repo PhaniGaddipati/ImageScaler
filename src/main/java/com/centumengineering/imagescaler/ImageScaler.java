@@ -1,11 +1,19 @@
 package com.centumengineering.imagescaler;
 
+import com.centumengineering.imagescaler.scaling.ScaleResult;
+import com.centumengineering.imagescaler.scaling.ScaleTask;
 import com.centumengineering.imagescaler.utils.NetworkUtils;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -43,16 +51,13 @@ public class ImageScaler {
                     // We can start the processing
                     int thumbW = CLIOptions.DEFAULT_THUMB_WIDTH;
                     if (opts.hasOption(CLIOptions.OPTION_THUMB_WIDTH)) {
-                        thumbW = (Integer) opts.getParsedOptionValue(CLIOptions.OPTION_THUMB_WIDTH);
+                        thumbW = Integer.parseInt(opts.getOptionValue(CLIOptions.OPTION_THUMB_WIDTH));
                     }
                     int fullW = CLIOptions.DEFAULT_FULL_WIDTH;
                     if (opts.hasOption(CLIOptions.OPTION_FULL_WIDTH)) {
-                        fullW = (Integer) opts.getParsedOptionValue(CLIOptions.OPTION_FULL_WIDTH);
+                        fullW = Integer.parseInt(opts.getOptionValue(CLIOptions.OPTION_FULL_WIDTH));
                     }
-                    boolean overwrite = false;
-                    if (opts.hasOption(CLIOptions.OPTION_OVERWRITE)) {
-                        overwrite = true;
-                    }
+
                     File thumbFile = new File(opts.getOptionValue(CLIOptions.OPTION_THUMB_OUT));
                     File fullFile = new File(opts.getOptionValue(CLIOptions.OPTION_FULL_OUT));
                     File[] paths;
@@ -76,7 +81,11 @@ public class ImageScaler {
                             return;
                         }
                     }
-                    processPaths(paths, thumbW, fullW, thumbFile, fullFile, overwrite);
+                    try {
+                        processPaths(paths, thumbW, fullW, thumbFile, fullFile);
+                    } catch (ExecutionException | InterruptedException ex) {
+                        System.out.println("Processing was interrupted!");
+                    }
                 }
             } catch (ParseException ex) {
                 System.err.println("\nFailed to run. " + ex.getMessage());
@@ -87,7 +96,7 @@ public class ImageScaler {
     }
 
     private void processPaths(File[] files, int thumbW, int fullW,
-            File thumbDir, File fullDir, boolean overwrite) {
+            File thumbDir, File fullDir) throws ExecutionException, InterruptedException {
 
         System.out.println("Using thumbnail output directory " + thumbDir.getAbsolutePath());
         System.out.println("Using full output directory " + fullDir.getAbsolutePath());
@@ -95,6 +104,20 @@ public class ImageScaler {
         System.out.println("Full Width: " + fullW + "px");
         System.out.println();
         System.out.println("Beginning work on " + files.length + " files.");
+
+        List<CompletableFuture> futures = new ArrayList<>(files.length);
+        for (final File f : files) {
+            futures.add(ScaleTask.newCompletableFuture(f, thumbW, fullW, thumbDir, fullDir)
+                    .thenApply(ScaleTask::printTaskSummary)
+                    .exceptionally(t -> {
+                        System.out.println("Failed to process " + f.getAbsolutePath() + ".\n" + t.getMessage() + "\n");
+                        t.printStackTrace();
+                        return null;
+                    }));
+        }
+
+        // Block until all futures complete
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[files.length])).get();
     }
 
     private File[] loadFilePaths(File inFile, boolean network) throws IOException {

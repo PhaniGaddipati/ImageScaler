@@ -22,10 +22,7 @@ public class CLIOptions {
     public static final String OPTION_DIR_RECURSIVE = "recursive";
 
     public static final String OPTION_THUMB_OUT = "thumb-out";
-    public static final String OPTION_FULL_OUT = "full-out";
-
-    public static final String OPTION_OVERWRITE = "overwrite";
-    public static final boolean DEFAULT_OVERWRITE = false;
+    public static final String OPTION_FULL_OUT = "full-out";    
 
     public static final String OPTION_THUMB_WIDTH = "thumb-width";
     public static final int DEFAULT_THUMB_WIDTH = 150;
@@ -54,12 +51,6 @@ public class CLIOptions {
                 .hasArg()
                 .numberOfArgs(1)
                 .type(Integer.TYPE)
-                .build());
-
-        options.addOption(Option.builder()
-                .longOpt(OPTION_OVERWRITE)
-                .desc("If the thumbnail or full image exists already, overwrite it.")
-                .required(false)
                 .build());
 
         options.addOption(Option.builder("i")
